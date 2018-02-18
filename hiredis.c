@@ -1003,13 +1003,13 @@ static void *__redisBlockForReply(redisContext *c) {
     return NULL;
 }
 
-void *redisvCommand(redisContext *c, const char *format, va_list ap) {
+redisReply *redisvCommand(redisContext *c, const char *format, va_list ap) {
     if (redisvAppendCommand(c,format,ap) != REDIS_OK)
         return NULL;
     return __redisBlockForReply(c);
 }
 
-void *redisCommand(redisContext *c, const char *format, ...) {
+redisReply *redisCommand(redisContext *c, const char *format, ...) {
     va_list ap;
     va_start(ap,format);
     void *reply = redisvCommand(c,format,ap);
@@ -1017,7 +1017,7 @@ void *redisCommand(redisContext *c, const char *format, ...) {
     return reply;
 }
 
-void *redisCommandArgv(redisContext *c, int argc, const char **argv, const size_t *argvlen) {
+redisReply *redisCommandArgv(redisContext *c, int argc, const char **argv, const size_t *argvlen) {
     if (redisAppendCommandArgv(c,argc,argv,argvlen) != REDIS_OK)
         return NULL;
     return __redisBlockForReply(c);
